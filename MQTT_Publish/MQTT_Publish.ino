@@ -77,14 +77,8 @@ void setup() {
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println("Callback Fired");
-   int strPayload = (int)payload;
- /*  Serial.println(strPayload, DEC);
-    if(strPayload == 1) {
-      digitalWrite(13,true);
-    }else { 
-      digitalWrite(13, false);
-    }*/
-  
+ //  int strPayload = (int)payload;
+ //  Serial.println(payload, DEC);
 }
 
 
