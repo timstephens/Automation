@@ -36,16 +36,6 @@ void setup(void)
   radio.startListening();
   
   radio.powerUp();
-  //
-  // Open pipes to other nodes for communication
-  //
-
-  // This simple sketch opens two pipes for these two nodes to communicate
-  // back and forth.
-  // Open 'our' pipe for writing
-  // Open the 'other' pipe for reading, in position #1 (we can have up to 5 pipes open for reading)
-
-
  
   delay(20);
   radio.printDetails();
