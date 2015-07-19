@@ -2,43 +2,39 @@
 #include "font.h"
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
+#include <PubSubClient.h>
+#include <String.h>
 
 
 const char* ssid = "virginmedia0465902";
 const char* password = "mqqvrjww";
 //MDNSResponder mdns;
+IPAddress server(192, 168, 0, 8);
 
 
 #define ARRAYCOLS 128
 #define NUMARRAYS  8
 
+
+//Define the pins that are needed to talk to the LED array
 LedControl lc = LedControl(14, 13, 12, NUMARRAYS); //12, 11, 10, NUMARRAYS);
+//Create a wifiClient.
+WiFiClient wifiClient;
+
 
 /* we always wait a bit between updates of the display */
 unsigned long delaytime = 500;
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("connected");
-  /*
-   The MAX72XX is in power-saving mode on startup,
-   we have to do a wakeup call
-   */
-  for (int devices = 0; devices < NUMARRAYS; devices++)
-  {
-    lc.shutdown(devices, false);
 
-    /* Set the brightness to a medium values */
-    lc.setIntensity(devices, 8);
-    /* and clear the display */
-    lc.clearDisplay(devices);
-  }
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }//*/
+
+void callback(const MQTT::Publish& pub) {
+  // handle message arrived
 }
+
+
+PubSubClient client(wifiClient, server, 1883);  //Explicitly mention the port that we connect to.
+
+
 
 void printChar(String row1Data) {
 
@@ -78,6 +74,34 @@ void printChar(String row1Data) {
 }
 
 
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("connected");
+  /*
+   The MAX72XX is in power-saving mode on startup,
+   we have to do a wakeup call
+   */
+  for (int devices = 0; devices < NUMARRAYS; devices++)
+  {
+    lc.shutdown(devices, false);
+
+    /* Set the brightness to a medium values */
+    lc.setIntensity(devices, 8);
+    /* and clear the display */
+    lc.clearDisplay(devices);
+  }
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  client.set_callback(callback);
+}
+
+
+
 void loop() {
 
   //lc.setLed(3, i, i, true);
@@ -88,10 +112,28 @@ void loop() {
   printChar(String(millis(), DEC));
 
   delay(500);
+
+  Serial.print(millis(), DEC);
+  Serial.print(" ");
+  Serial.println("Main Loop");
+
+  if (WiFi.status() == WL_CONNECTED) {
+    if (!client.connected()) {
+      if (client.connect("arduinoClient")) {
+        Serial.println("Connected to MQTT broker");
+        client.publish("/test", "hello world");
+        client.subscribe("/inTopic");
+      } else {
+        Serial.println("Tried to connect to broker, but failed");
+      }
+    }
+
+    if (client.connected())
+      client.loop();
+  }
+
   for (int devices = 0; devices < NUMARRAYS; devices++) {
     lc.clearDisplay(devices);
   }
-  Serial.print(millis(), DEC);
-  Serial.print(" "); 
-  Serial.println("Main Loop");
+
 }
