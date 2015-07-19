@@ -6,7 +6,7 @@
 
 const char* ssid = "virginmedia0465902";
 const char* password = "mqqvrjww";
-MDNSResponder mdns;
+//MDNSResponder mdns;
 
 
 #define ARRAYCOLS 128
@@ -33,11 +33,11 @@ void setup() {
     /* and clear the display */
     lc.clearDisplay(devices);
   }
- /* WiFi.begin(ssid, password);
+  /*WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
-  }*/
+  }//*/
 }
 
 void printChar(String row1Data) {
@@ -91,5 +91,7 @@ void loop() {
   for (int devices = 0; devices < NUMARRAYS; devices++) {
     lc.clearDisplay(devices);
   }
+  Serial.print(millis(), DEC);
+  Serial.print(" "); 
   Serial.println("Main Loop");
 }
