@@ -33,7 +33,7 @@ void setup() {
     /* and clear the display */
     lc.clearDisplay(devices);
   }
-  /*WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
