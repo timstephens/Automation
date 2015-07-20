@@ -29,11 +29,17 @@ unsigned long delaytime = 500;
 
 void callback(const MQTT::Publish& pub) {
   // handle message arrived
+  Serial.println("Callback");
 }
 
 
-PubSubClient client(wifiClient, server, 1883);  //Explicitly mention the port that we connect to.
+PubSubClient pubsub(wifiClient, server, 1883);  //Explicitly mention the port that we connect to.
 
+void clearDisplays() {
+  for (int devices = 0; devices < NUMARRAYS; devices++) {
+    lc.clearDisplay(devices);
+  }
+}
 
 
 void printChar(String row1Data) {
@@ -97,7 +103,7 @@ void setup() {
     Serial.print(".");
   }
 
-  client.set_callback(callback);
+  pubsub.set_callback(callback);
 }
 
 
@@ -118,22 +124,22 @@ void loop() {
   Serial.println("Main Loop");
 
   if (WiFi.status() == WL_CONNECTED) {
-    if (!client.connected()) {
-      if (client.connect("arduinoClient")) {
+    Serial.println("Wifi connected");
+    if (!pubsub.connected()) {
+      if (pubsub.connect("arduinopubsub")) {
         Serial.println("Connected to MQTT broker");
-        client.publish("/test", "hello world");
-        client.subscribe("/inTopic");
+        pubsub.publish("/test", "hello world");
+        pubsub.subscribe("/inTopic");
       } else {
-        Serial.println("Tried to connect to broker, but failed");
+        Serial.println("Think I am connected to the broker...");
+         pubsub.publish("/test", "hello world2");
       }
     }
 
-    if (client.connected())
-      client.loop();
+    if (pubsub.connected())
+      pubsub.loop(); //*/
   }
 
-  for (int devices = 0; devices < NUMARRAYS; devices++) {
-    lc.clearDisplay(devices);
-  }
+  clearDisplays();
 
 }
