@@ -17,7 +17,7 @@ IPAddress server(192, 168, 0, 8);
 
 
 //Define the pins that are needed to talk to the LED array
-LedControl lc = LedControl(14, 13, 12, NUMARRAYS); //12, 11, 10, NUMARRAYS);
+//LedControl lc = LedControl(14, 13, 12, NUMARRAYS); //12, 11, 10, NUMARRAYS);
 //Create a wifiClient.
 WiFiClient wifiClient;
 
@@ -33,13 +33,14 @@ void callback(const MQTT::Publish& pub) {
 }
 
 
-PubSubClient pubsub(wifiClient, server, 1883);  //Explicitly mention the port that we connect to.
-
+PubSubClient pubsub(wifiClient, server); //, 1883, callback, wifiClient);  //Explicitly mention the port that we connect to.
+/*
 void clearDisplays() {
   for (int devices = 0; devices < NUMARRAYS; devices++) {
     lc.clearDisplay(devices);
   }
 }
+
 
 
 void printChar(String row1Data) {
@@ -51,7 +52,7 @@ void printChar(String row1Data) {
   Then write the buffer out to the display, reconfiguring
   it as appropriate for the display layout.
   **************************************************** */
-
+/*
   char buf[ARRAYCOLS];
   int c, i, count;
   int array, col;
@@ -79,7 +80,7 @@ void printChar(String row1Data) {
   }
 }
 
-
+//*/
 
 void setup() {
   Serial.begin(115200);
@@ -88,15 +89,16 @@ void setup() {
    The MAX72XX is in power-saving mode on startup,
    we have to do a wakeup call
    */
-  for (int devices = 0; devices < NUMARRAYS; devices++)
+ /* for (int devices = 0; devices < NUMARRAYS; devices++)
   {
     lc.shutdown(devices, false);
 
-    /* Set the brightness to a medium values */
+   // Set the brightness to a medium values 
     lc.setIntensity(devices, 8);
-    /* and clear the display */
+    // and clear the display 
     lc.clearDisplay(devices);
-  }
+  } 
+  //*/
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -115,7 +117,7 @@ void loop() {
   //lc.setColumn(1, 2, 0xFF);
   //lc.setLed(0, i, i, true);
 
-  printChar(String(millis(), DEC));
+  //printChar(String(millis(), DEC));
 
   delay(500);
 
@@ -125,21 +127,27 @@ void loop() {
 
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("Wifi connected");
-    if (!pubsub.connected()) {
-      if (pubsub.connect("arduinopubsub")) {
+    if(!pubsub.connected()) {
+      Serial.println("doing connecting");
+        pubsub.connect("Arduino");
+      }
+      
+      /*Seems to keep trying to connect to the broker, which suggests that this is the part that's failing. 
+      
         Serial.println("Connected to MQTT broker");
         pubsub.publish("/test", "hello world");
         pubsub.subscribe("/inTopic");
-      } else {
+     // } else {
         Serial.println("Think I am connected to the broker...");
          pubsub.publish("/test", "hello world2");
-      }
-    }
+     // }
+    
 
     if (pubsub.connected())
       pubsub.loop(); //*/
-  }
+ }
 
-  clearDisplays();
+ // clearDisplays();
+
 
 }
