@@ -1,12 +1,12 @@
 #include "LedControl.h"
 #include "font.h"
-//#include <WiFiClient.h>
-//#include <ESP8266mDNS.h>
+#include <WiFiClient.h>
+#include <ESP8266mDNS.h>
 
 
-//const char* ssid = "virginmedia0465902";
-//const char* password = "mqqvrjww";
-//MDNSResponder mdns;
+const char* ssid = "virginmedia0465902";
+const char* password = "mqqvrjww";
+////MDNSResponder mdns;
 
 
 #define ARRAYCOLS 64
@@ -35,11 +35,11 @@ void setup() {
     /* and clear the display */
     lc.clearDisplay(devices);
   }
-  /* WiFi.begin(ssid, password);
+   WiFi.begin(ssid, password);
    while (WiFi.status() != WL_CONNECTED) {
      delay(500);
      Serial.print(".");
-   }*/
+   }//*/
 }
 
 void printChar(String row1Data) {
@@ -83,8 +83,8 @@ void printChar(String row1Data) {
 void loop() {
 
 //  lc.setLed(3, i, i, true);
-  lc.setRow(2, 2, 0xFFFF);
-  lc.setColumn(1, 2, 0xFF);
+//  lc.setRow(2, 2, 0xFFFF);
+//  lc.setColumn(1, 2, 0xFF);
 //  lc.setLed(0, i, i, true);
 
   printChar(String(millis(), DEC));
