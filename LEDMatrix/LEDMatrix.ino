@@ -1,18 +1,20 @@
 #include "LedControl.h"
 #include "font.h"
-#include <WiFiClient.h>
-#include <ESP8266mDNS.h>
+//#include <WiFiClient.h>
+//#include <ESP8266mDNS.h>
 
 
-const char* ssid = "virginmedia0465902";
-const char* password = "mqqvrjww";
-MDNSResponder mdns;
+//const char* ssid = "virginmedia0465902";
+//const char* password = "mqqvrjww";
+//MDNSResponder mdns;
 
 
-#define ARRAYCOLS 128
-#define NUMARRAYS  8
+#define ARRAYCOLS 64
+#define NUMARRAYS  4
 
-LedControl lc = LedControl(14, 13, 12, NUMARRAYS); //12, 11, 10, NUMARRAYS);
+// Parameters in LedControl are DIN, CLK, CS
+//LedControl lc = LedControl(12, 11, 10, NUMARRAYS);// ARDUINO VERSION
+LedControl lc = LedControl(14, 13, 12, NUMARRAYS); //ESP03  Version
 
 /* we always wait a bit between updates of the display */
 unsigned long delaytime = 500;
@@ -29,15 +31,15 @@ void setup() {
     lc.shutdown(devices, false);
 
     /* Set the brightness to a medium values */
-    lc.setIntensity(devices, 8);
+    lc.setIntensity(devices, NUMARRAYS);
     /* and clear the display */
     lc.clearDisplay(devices);
   }
- /* WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }*/
+  /* WiFi.begin(ssid, password);
+   while (WiFi.status() != WL_CONNECTED) {
+     delay(500);
+     Serial.print(".");
+   }*/
 }
 
 void printChar(String row1Data) {
@@ -80,10 +82,10 @@ void printChar(String row1Data) {
 
 void loop() {
 
-  //lc.setLed(3, i, i, true);
-  //  lc.setRow(2, 2, 0xFFFF);
-  //lc.setColumn(1, 2, 0xFF);
-  //lc.setLed(0, i, i, true);
+//  lc.setLed(3, i, i, true);
+  lc.setRow(2, 2, 0xFFFF);
+  lc.setColumn(1, 2, 0xFF);
+//  lc.setLed(0, i, i, true);
 
   printChar(String(millis(), DEC));
 
