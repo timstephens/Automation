@@ -8,9 +8,9 @@ const char* ssid = "virginmedia0465902";
 const char* password = "mqqvrjww";
 ////MDNSResponder mdns;
 
-String pl; //Somewhere to store the data forthe display? 
-#define ARRAYCOLS 64
-#define NUMARRAYS  4
+String pl; //Somewhere to store the data forthe display?
+#define ARRAYCOLS 128
+#define NUMARRAYS  8
 
 // Parameters in LedControl are DIN, CLK, CS
 //LedControl lc = LedControl(12, 11, 10, NUMARRAYS);// ARDUINO VERSION
@@ -23,18 +23,18 @@ unsigned long delaytime = 500;
 // Update these with values suitable for your network.
 byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
 //IPAddress ip(192.168.0.9);
-IPAddress server(192,168,0,8);
+IPAddress server(192, 168, 0, 8);
 //8*************
 void callback(char* topic, byte* payload, unsigned int length) {
-  pl =""; //This is a global string because Arduino. 
+  pl = ""; //This is a global string because Arduino.
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  for (int i=0;i<length;i++) {
+  for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
-   pl+=String((char)payload[i]);
+    pl += String((char)payload[i]);
   }
-  Serial.println(); 
+  Serial.println();
 }
 
 WiFiClient ethClient;
@@ -48,7 +48,7 @@ void reconnect() {
     if (client.connect("arduinoClient")) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish("/outTopic","hello world");
+      client.publish("/outTopic", "hello world");
       // ... and resubscribe
       client.subscribe("/inTopic");
     } else {
@@ -81,13 +81,13 @@ void setup() {
     /* and clear the display */
     lc.clearDisplay(devices);
   }
-   WiFi.begin(ssid, password);
-   while (WiFi.status() != WL_CONNECTED) {
-     delay(500);
-     Serial.print(".");
-   }//*/
-   
-    client.setServer(server, 1883);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }//*/
+
+  client.setServer(server, 1883);
   client.setCallback(callback);
 }
 
@@ -99,6 +99,8 @@ void printChar(String row1Data) {
   column each).
   Then write the buffer out to the display, reconfiguring
   it as appropriate for the display layout.
+
+  TODO: NEEDS SOME VALIDATION TO PREVENT BUFFER OVERFLOW
   **************************************************** */
 
   char buf[ARRAYCOLS];
@@ -114,9 +116,14 @@ void printChar(String row1Data) {
   for (int index = 0; index < row1Data.length(); index++) {
     c = row1Data.charAt(index);
     for (int i = 0; i < 6; i++) { //For each column within a character
+      if (count > ARRAYCOLS) {
+        break;  //Once there are more columns than in the LED array, stop writing. This is to stop a crasher on ESP03
+      }
       buf[count] =  pgm_read_byte(&ASCII[(int)c][i]); //We're bit-shifting the data in one column at a time
       count++;
     }
+   
+
   }
   //Once the buffer is full, write the data out to the LED array
   //There are 64 columns, so do a modulus%8 of the current index in the buffer. The mod is the array number and the remainder is the column.
@@ -131,18 +138,18 @@ void printChar(String row1Data) {
 
 void loop() {
 
-//  lc.setLed(3, i, i, true);
-//  lc.setRow(2, 2, 0xFFFF);
-//  lc.setColumn(1, 2, 0xFF);
-//  lc.setLed(0, i, i, true);
+  //  lc.setLed(3, i, i, true);
+  //  lc.setRow(2, 2, 0xFFFF);
+  //  lc.setColumn(1, 2, 0xFF);
+  //  lc.setLed(0, i, i, true);
 
   //printChar(String(millis(), DEC));
   printChar(pl);  //str(payload) should return a string from the payload, assuming that the payload is null terminated...
 
-  delay(500);
-  for (int devices = 0; devices < NUMARRAYS; devices++) {
-    lc.clearDisplay(devices);
-  }
+  delay(1000);
+  //  for (int devices = 0; devices < NUMARRAYS; devices++) {
+  //    lc.clearDisplay(devices);
+  //  }
   Serial.println("Main Loop");
   if (!client.connected()) {
     reconnect();
