@@ -8,7 +8,7 @@ const char* ssid = "virginmedia0465902";
 const char* password = "mqqvrjww";
 ////MDNSResponder mdns;
 
-
+String pl; //Somewhere to store the data forthe display? 
 #define ARRAYCOLS 64
 #define NUMARRAYS  4
 
@@ -23,16 +23,18 @@ unsigned long delaytime = 500;
 // Update these with values suitable for your network.
 byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
 //IPAddress ip(192.168.0.9);
-IPAddress server(192.168.0.8);
+IPAddress server(192,168,0,8);
 //8*************
 void callback(char* topic, byte* payload, unsigned int length) {
+  pl =""; //This is a global string because Arduino. 
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
   for (int i=0;i<length;i++) {
     Serial.print((char)payload[i]);
+   pl+=String((char)payload[i]);
   }
-  Serial.println();
+  Serial.println(); 
 }
 
 WiFiClient ethClient;
@@ -46,9 +48,9 @@ void reconnect() {
     if (client.connect("arduinoClient")) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish("outTopic","hello world");
+      client.publish("/outTopic","hello world");
       // ... and resubscribe
-      client.subscribe("inTopic");
+      client.subscribe("/inTopic");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -134,11 +136,16 @@ void loop() {
 //  lc.setColumn(1, 2, 0xFF);
 //  lc.setLed(0, i, i, true);
 
-  printChar(String(millis(), DEC));
+  //printChar(String(millis(), DEC));
+  printChar(pl);  //str(payload) should return a string from the payload, assuming that the payload is null terminated...
 
   delay(500);
   for (int devices = 0; devices < NUMARRAYS; devices++) {
     lc.clearDisplay(devices);
   }
   Serial.println("Main Loop");
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
 }
