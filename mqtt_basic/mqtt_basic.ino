@@ -1,13 +1,14 @@
 /*
- Basic MQTT example 
- 
+ Basic MQTT example
+
   - connects to an MQTT server
   - publishes "hello world" to the topic "outTopic"
   - subscribes to the topic "inTopic"
 */
 
 #include <ESP8266WiFi.h>
-#include <PubSubClient.h>
+#include "PubSubClient.h"
+
 
 const char* ssid = "virginmedia0465902";
 const char* pass = "mqqvrjww";	//
@@ -15,12 +16,41 @@ const char* pass = "mqqvrjww";	//
 // Update these with values suitable for your network.
 IPAddress server(192, 168, 0, 8);
 
-void callback(const MQTT::Publish& pub) {
-  // handle message arrived
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
 }
 
 WiFiClient wclient;
-PubSubClient client(wclient, server);
+PubSubClient client(wclient);
+
+
+void reconnect() {
+  // Loop until we're reconnected
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (client.connect("arduinoClient", "user", "pass")) {
+      Serial.println("connected");
+      // Once connected, publish an announcement...
+      client.publish("outTopic", "hello world");
+      // ... and resubscribe
+      client.subscribe("inTopic");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
+
 
 void setup() {
   // Setup console
@@ -28,8 +58,8 @@ void setup() {
   delay(10);
   Serial.println();
   Serial.println();
-
-  client.set_callback(callback);
+  client.setServer(server, 1883);
+  client.setCallback(callback);
 }
 
 void loop() {
@@ -45,15 +75,16 @@ void loop() {
   }
 
   if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("WiFi conn 2");
     if (!client.connected()) {
-      if (client.connect("arduinoClient")) {
-	client.publish("outTopic","hello world");
-	client.subscribe("inTopic");
-      }
+      reconnect();
     }
+     client.publish("outTopic", "hello world");
 
-    if (client.connected())
-      client.loop();
   }
+ 
+  client.loop();
+  Serial.println("Servicing Interrupts");
+  delay(100);
 }
 
