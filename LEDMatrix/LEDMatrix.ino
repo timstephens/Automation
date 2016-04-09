@@ -11,7 +11,7 @@ const char* password = "mqqvrjww";
 String pl; //Somewhere to store the data forthe display?
 #define ARRAYCOLS 128
 #define NUMARRAYS  8
-
+#define DISPLENGTH 10
 // Parameters in LedControl are DIN, CLK, CS
 //LedControl lc = LedControl(12, 11, 10, NUMARRAYS);// ARDUINO VERSION
 LedControl lc = LedControl(14, 13, 12, NUMARRAYS); //ESP03  Version
@@ -48,9 +48,9 @@ void reconnect() {
     if (client.connect("arduinoClient")) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish("/outTopic", "hello world");
+      client.publish("/control", "/message ready");
       // ... and resubscribe
-      client.subscribe("/inTopic");
+      client.subscribe("/message");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -95,7 +95,7 @@ void printChar(String row1Data) {
 
   /* ****************************************************
   Build up the text that you want to write to the screen
-  into a buffer, made up of 64 chars (corresponding to a
+  into a buffer, made up of ARRAYCOLS chars (corresponding to a
   column each).
   Then write the buffer out to the display, reconfiguring
   it as appropriate for the display layout.
@@ -122,7 +122,7 @@ void printChar(String row1Data) {
       buf[count] =  pgm_read_byte(&ASCII[(int)c][i]); //We're bit-shifting the data in one column at a time
       count++;
     }
-   
+
 
   }
   //Once the buffer is full, write the data out to the LED array
@@ -137,13 +137,24 @@ void printChar(String row1Data) {
 
 
 void loop() {
+  int pos;
+ 
+  
+  //If there's a message that's longer than the display length, we'll scroll through it once, then display the first few characters on the display until it's updated again. 
+  //This means that you'll need to handle this case on the MQTT server end (probably within NodeRed, or whatever)
+  if (pl.length() > DISPLENGTH) {
+    pos = DISPLENGTH;
+    Serial.println("Scrolling...");
 
-  //  lc.setLed(3, i, i, true);
-  //  lc.setRow(2, 2, 0xFFFF);
-  //  lc.setColumn(1, 2, 0xFF);
-  //  lc.setLed(0, i, i, true);
+    while (pos < pl.length()) {
+      printChar(pl.substring(pos - DISPLENGTH, pos));
+      pos++;
+      delay(500);
+    }
+    pl = pl.substring(0, DISPLENGTH); //Do this so that a long string can't prevent the pl from being updated. A long strng could cause the code to be stuck in this loop for ages because the window where a new string can be sent is very whort. 
+    
+  }
 
-  //printChar(String(millis(), DEC));
   printChar(pl);  //str(payload) should return a string from the payload, assuming that the payload is null terminated...
 
   delay(1000);
