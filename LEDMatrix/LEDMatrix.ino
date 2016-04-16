@@ -146,11 +146,12 @@ void loop() {
     pos = DISPLENGTH;
     Serial.println("Scrolling...");
 
-    while (pos < pl.length()) {
+    while (pos <= pl.length()) {
       printChar(pl.substring(pos - DISPLENGTH, pos));
       pos++;
       delay(500);
     }
+    delay(1000);
     pl = pl.substring(0, DISPLENGTH); //Do this so that a long string can't prevent the pl from being updated. A long strng could cause the code to be stuck in this loop for ages because the window where a new string can be sent is very whort. 
     
   }

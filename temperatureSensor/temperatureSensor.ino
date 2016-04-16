@@ -4,8 +4,6 @@
 #include <PubSubClient.h>
 #include <DHT.h>
 
-
-
 DHT sens1(2, DHT11);
 
 
@@ -67,12 +65,12 @@ void setup() {
     delay(500);
     Serial.print(".");
   }//*/
-
+  //
   client.setServer(server, 1883);
   client.setCallback(callback);
-
-  //Start the temperature sensor
-  sens1.begin();
+  //
+  //  //Start the temperature sensor
+    sens1.begin();
 }
 
 
@@ -80,23 +78,23 @@ void loop() {
 
   char buffer[10];
   float t1, h1;
-  t1 = sens1.readTemperature();
-  h1 = sens1.readHumidity();
-  String tempF = String(t1, DEC); //dtostrf(t1, 4, 1, buffer);
-  String humF = dtostrf(h1, 4, 1, buffer);
-  //  updateTemp(tempF, humF);
-  //i++;
-  for (int myloop = 0; myloop < 5; myloop++) {
-    delay(2000);
+    t1 = sens1.readTemperature();
+    h1 = sens1.readHumidity();
+    String tempF = String(t1, DEC); //dtostrf(t1, 4, 1, buffer); //
+    tempF += " ";
+    tempF  += String(h1, DEC); //dtostrf(h1, 4, 1, buffer); //
+ 
+  //  for (int myloop = 0; myloop < 5; myloop++) {
+  delay(2000);
 
 
-    Serial.println("Main Loop");
-    if (!client.connected()) {
-      reconnect();
-    } else {
-      client.publish("/outTemp", "tempF");
+  Serial.println("Main Loop");
+  if (!client.connected()) {
+    reconnect();
+  } else {
+    client.publish("/outTemp", (char *)tempF.c_str());
 
-    }
-    client.loop();
   }
+  client.loop();
+  //  }
 }
