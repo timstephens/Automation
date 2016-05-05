@@ -4,8 +4,8 @@
 #include <ESP8266mDNS.h>
 #include <PubSubClient.h>
 
-const char* ssid = "virginmedia0465902";
-const char* password = "mqqvrjww";
+const char* ssid = "wifi";
+const char* password = "hunter77";
 ////MDNSResponder mdns;
 
 String pl; //Somewhere to store the data forthe display?

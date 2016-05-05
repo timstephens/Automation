@@ -11,8 +11,8 @@ OneWire oneWire(2); //Set up on GPIO2
 DallasTemperature sensors(&oneWire);
 
 
-const char* ssid = "virginmedia0465902";
-const char* password = "mqqvrjww";
+const char* ssid = "wifi";
+const char* password = "hunter77";
 ////MDNSResponder mdns;
 
 
@@ -40,7 +40,7 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("arduinoClient")) {
+    if (client.connect("arduinoClien")) {
       Serial.println("connected");
       // Once connected, publish an announcement...
       client.publish("/outTemp", "WeatherBug!");
