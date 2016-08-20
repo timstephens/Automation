@@ -19,6 +19,8 @@ LedControl lc = LedControl(14, 13, 12, NUMARRAYS); //ESP03  Version
 /* we always wait a bit between updates of the display */
 unsigned long delaytime = 500;
 
+//Button on GPIO 2, pulled high with 470k. Short to ground to register a button press.
+int button = 2;
 
 // Update these with values suitable for your network.
 byte mac[]    = {  0xDE, 0xED, 0xBA, 0xFE, 0xFE, 0xED };
@@ -68,10 +70,11 @@ void reconnect() {
 void setup() {
   Serial.begin(115200);
   Serial.println("connected");
+  
   /*
-   The MAX72XX is in power-saving mode on startup,
-   we have to do a wakeup call
-   */
+    The MAX72XX is in power-saving mode on startup,
+    we have to do a wakeup call
+  */
   for (int devices = 0; devices < NUMARRAYS; devices++)
   {
     lc.shutdown(devices, false);
@@ -89,18 +92,19 @@ void setup() {
 
   client.setServer(server, 1883);
   client.setCallback(callback);
+  pinMode(button, INPUT);
 }
 
 void printChar(String row1Data) {
 
   /* ****************************************************
-  Build up the text that you want to write to the screen
-  into a buffer, made up of ARRAYCOLS chars (corresponding to a
-  column each).
-  Then write the buffer out to the display, reconfiguring
-  it as appropriate for the display layout.
+    Build up the text that you want to write to the screen
+    into a buffer, made up of ARRAYCOLS chars (corresponding to a
+    column each).
+    Then write the buffer out to the display, reconfiguring
+    it as appropriate for the display layout.
 
-  TODO: NEEDS SOME VALIDATION TO PREVENT BUFFER OVERFLOW
+    TODO: NEEDS SOME VALIDATION TO PREVENT BUFFER OVERFLOW
   **************************************************** */
 
   char buf[ARRAYCOLS];
@@ -138,9 +142,9 @@ void printChar(String row1Data) {
 
 void loop() {
   int pos;
- 
-  
-  //If there's a message that's longer than the display length, we'll scroll through it once, then display the first few characters on the display until it's updated again. 
+
+
+  //If there's a message that's longer than the display length, we'll scroll through it once, then display the first few characters on the display until it's updated again.
   //This means that you'll need to handle this case on the MQTT server end (probably within NodeRed, or whatever)
   if (pl.length() > DISPLENGTH) {
     pos = DISPLENGTH;
@@ -152,12 +156,22 @@ void loop() {
       delay(500);
     }
     delay(1000);
-    pl = pl.substring(0, DISPLENGTH); //Do this so that a long string can't prevent the pl from being updated. A long strng could cause the code to be stuck in this loop for ages because the window where a new string can be sent is very whort. 
-    
+    pl = pl.substring(0, DISPLENGTH); //Do this so that a long string can't prevent the pl from being updated. A long strng could cause the code to be stuck in this loop for ages because the window where a new string can be sent is very whort.
+
   }
 
   printChar(pl);  //str(payload) should return a string from the payload, assuming that the payload is null terminated...
-
+  
+  
+  //If there's a button press, send a message to tell the broker that it's happened. A decision about what that means will be made there...
+  int inputButton = digitalRead(button);
+  
+  if (inputButton == 0) {
+    client.publish("/buffer", "button");  //Publish that a button was pressed, and signal it to the buffer workflow in Nodered.
+  } else {
+    Serial.println("buttonUp");
+  }
+  
   delay(1000);
   //  for (int devices = 0; devices < NUMARRAYS; devices++) {
   //    lc.clearDisplay(devices);
