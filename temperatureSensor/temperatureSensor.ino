@@ -2,9 +2,9 @@
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
 #include <PubSubClient.h>
-#include <DHT.h>
+//#include <DHT.h>
 
-DHT sens1(2, DHT11);
+//DHT sens1(2, DHT11);
 
 
 const char* ssid = "virginmedia0465902";
@@ -70,20 +70,20 @@ void setup() {
   client.setCallback(callback);
   //
   //  //Start the temperature sensor
-    sens1.begin();
+//    sens1.begin();
 }
 
 
 void loop() {
 
   char buffer[10];
-  float t1, h1;
-    t1 = sens1.readTemperature();
-    h1 = sens1.readHumidity();
-    String tempF = String(t1, DEC); //dtostrf(t1, 4, 1, buffer); //
-    tempF += " ";
-    tempF  += String(h1, DEC); //dtostrf(h1, 4, 1, buffer); //
- 
+//  float t1, h1;
+//    t1 = 4.56; //sens1.readTemperature();
+//    h1 = 5.46; //sens1.readHumidity();
+//    String tempF = String(t1, DEC); //dtostrf(t1, 4, 1, buffer); //
+//    tempF += " ";
+//    tempF  += String(h1, DEC); //dtostrf(h1, 4, 1, buffer); //
+// 
   //  for (int myloop = 0; myloop < 5; myloop++) {
   delay(2000);
 
@@ -92,7 +92,7 @@ void loop() {
   if (!client.connected()) {
     reconnect();
   } else {
-    client.publish("/outTemp", (char *)tempF.c_str());
+    client.publish("/outTemp", "123"); //(char *)tempF.c_str());
 
   }
   client.loop();
