@@ -5,6 +5,8 @@
 //#include <DHT.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
+#include <ESP.h>
+
 
 
 //DHT sens1(2, DHT11);
@@ -47,7 +49,7 @@ void reconnect() {
     if (client.connect("arduinoClient")) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish("/outTemp", "WeatherBug!");
+      client.publish("/control", "WeatherBug!");
       // ... and resubscribe
       client.subscribe("/inWeather");
     } else {
@@ -108,8 +110,11 @@ void loop() {
     reconnect();
   } else {
     client.publish("/outTemp", (char *)tempC.c_str());
-
+    Serial.println("Sleeping 300s");
+    ESP.deepSleep(300000000,WAKE_RF_DEFAULT); 
   }
   client.loop();
+
+  //ESP.deepSleep(10000000,WAKE_RF_DEFAULT); 
   //  }
 }
