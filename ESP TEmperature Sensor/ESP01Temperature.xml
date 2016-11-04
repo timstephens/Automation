@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/Users/timini/Documents/Arduino/Automation/ESP TEmperature Sensor/ESP01Temperature.sch</source>
+    <date>Sunday, 23 October 2016 'pmt' 22:11:07</date>
+    <tool>Eeschema 4.0.4-stable</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>ESP01Temperature.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="SW1">
+      <value>PROG</value>
+      <footprint>Buttons_Switches_ThroughHole:SW_PUSH_6mm</footprint>
+      <libsource lib="device" part="SW_PUSH"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58053D4D</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>10K</value>
+      <footprint>Resistors_SMD:R_1206_HandSoldering</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58053E38</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>10K</value>
+      <footprint>Resistors_SMD:R_1206_HandSoldering</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58053E5E</tstamp>
+    </comp>
+    <comp ref="U1">
+      <value>DS18B20</value>
+      <footprint>TO_SOT_Packages_THT:TO-92_Molded_Narrow</footprint>
+      <libsource lib="TJS" part="DS18B20"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58054262</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>10K</value>
+      <footprint>Resistors_SMD:R_1206_HandSoldering</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>580544F8</tstamp>
+    </comp>
+    <comp ref="K1">
+      <value>CONN_5</value>
+      <footprint>Connectors_Molex:Molex_KK-6410-05_05x2.54mm_Straight</footprint>
+      <libsource lib="conn" part="CONN_5"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58054639</tstamp>
+    </comp>
+    <comp ref="SW2">
+      <value>RESET</value>
+      <footprint>Buttons_Switches_ThroughHole:SW_PUSH_6mm</footprint>
+      <libsource lib="device" part="SW_PUSH"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5805477F</tstamp>
+    </comp>
+    <comp ref="R4">
+      <value>10K</value>
+      <footprint>Resistors_SMD:R_1206_HandSoldering</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58054830</tstamp>
+    </comp>
+    <comp ref="P2">
+      <value>CONN_2</value>
+      <footprint>Pin_Headers:Pin_Header_Angled_1x02</footprint>
+      <libsource lib="conn" part="CONN_2"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>58054E3B</tstamp>
+    </comp>
+    <comp ref="Q1">
+      <value>MCP1700T-3302E/TT</value>
+      <footprint>TO_SOT_Packages_SMD:SOT-23</footprint>
+      <libsource lib="TJS" part="MCP1700T-3302E/TT"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5807E986</tstamp>
+    </comp>
+    <comp ref="C1">
+      <value>33u</value>
+      <footprint>Capacitors_SMD:C_1206_HandSoldering</footprint>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5807EFCC</tstamp>
+    </comp>
+    <comp ref="C2">
+      <value>33u</value>
+      <footprint>Capacitors_SMD:C_1206_HandSoldering</footprint>
+      <libsource lib="device" part="C"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5807F01D</tstamp>
+    </comp>
+    <comp ref="U2">
+      <value>ESP-01v090</value>
+      <footprint>ESP8266:ESP-01</footprint>
+      <libsource lib="ESP8266" part="ESP-01v090"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5807F176</tstamp>
+    </comp>
+    <comp ref="P1">
+      <value>CONN_6</value>
+      <footprint>Connectors_Molex:Molex_KK-6410-06_06x2.54mm_Straight</footprint>
+      <libsource lib="conn" part="CONN_6"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>580CEB41</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="device" part="C">
+      <description>Condensateur non polarise</description>
+      <footprints>
+        <fp>SM*</fp>
+        <fp>C?</fp>
+        <fp>C1-1</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="CONN_2">
+      <description>Symbole general de connecteur</description>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_2</field>
+      </fields>
+      <pins>
+        <pin num="1" name="P1" type="passive"/>
+        <pin num="2" name="PM" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="CONN_5">
+      <description>Symbole general de connecteur</description>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_5</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+        <pin num="3" name="~" type="passive"/>
+        <pin num="4" name="~" type="passive"/>
+        <pin num="5" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="CONN_6">
+      <description>ymbole general de connecteur</description>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_6</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+        <pin num="4" name="4" type="passive"/>
+        <pin num="5" name="5" type="passive"/>
+        <pin num="6" name="6" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="TJS" part="DS18B20">
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">DS18B20</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="input"/>
+        <pin num="2" name="DQ" type="input"/>
+        <pin num="3" name="VDD" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="ESP8266" part="ESP-01v090">
+      <description>ESP8266 ESP-01 module, v090</description>
+      <docs>http://l0l.org.uk/2014/12/esp8266-modules-hardware-guide-gotta-catch-em-all/</docs>
+      <footprints>
+        <fp>ESP-01*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">ESP-01v090</field>
+      </fields>
+      <pins>
+        <pin num="1" name="UTXD" type="output"/>
+        <pin num="2" name="GND" type="power_in"/>
+        <pin num="3" name="CH_PD" type="input"/>
+        <pin num="4" name="GPIO2" type="3state"/>
+        <pin num="5" name="RST" type="input"/>
+        <pin num="6" name="GPIO0" type="3state"/>
+        <pin num="7" name="VCC" type="power_in"/>
+        <pin num="8" name="URXD" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="TJS" part="MCP1700T-3302E/TT">
+      <description>3.3v LDO Regulator</description>
+      <footprints>
+        <fp>sot-23</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">MCP1700T-3302E/TT</field>
+      </fields>
+      <pins>
+        <pin num="1" name="GND" type="input"/>
+        <pin num="2" name="Vout" type="input"/>
+        <pin num="3" name="Vin" type="input"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="R">
+      <description>Resistance</description>
+      <footprints>
+        <fp>R?</fp>
+        <fp>SM0603</fp>
+        <fp>SM0805</fp>
+        <fp>R?-*</fp>
+        <fp>SM1206</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="SW_PUSH">
+      <description>Push Button</description>
+      <fields>
+        <field name="Reference">SW</field>
+        <field name="Value">SW_PUSH</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="conn">
+      <uri>/Users/timini/Library/Application Support/kicad/library/conn.lib</uri>
+    </library>
+    <library logical="ESP8266">
+      <uri>/Users/timini/Documents/Kicad/ESP8266 Lib/kicad-ESP8266/ESP8266.lib</uri>
+    </library>
+    <library logical="TJS">
+      <uri>/Users/timini/Documents/Kicad/TJS.lib</uri>
+    </library>
+    <library logical="device">
+      <uri>/Users/timini/Library/Application Support/kicad/library/device.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="/RX">
+      <node ref="K1" pin="3"/>
+      <node ref="U2" pin="8"/>
+    </net>
+    <net code="2" name="/TX">
+      <node ref="K1" pin="2"/>
+      <node ref="U2" pin="1"/>
+    </net>
+    <net code="3" name="GND">
+      <node ref="SW2" pin="2"/>
+      <node ref="P2" pin="1"/>
+      <node ref="SW1" pin="1"/>
+      <node ref="U1" pin="1"/>
+      <node ref="K1" pin="1"/>
+      <node ref="U2" pin="2"/>
+      <node ref="C2" pin="1"/>
+      <node ref="C1" pin="2"/>
+      <node ref="Q1" pin="1"/>
+    </net>
+    <net code="4" name="Net-(C1-Pad1)">
+      <node ref="P2" pin="2"/>
+      <node ref="C1" pin="1"/>
+      <node ref="Q1" pin="3"/>
+    </net>
+    <net code="5" name="Net-(P1-Pad6)">
+      <node ref="P1" pin="6"/>
+    </net>
+    <net code="6" name="Net-(P1-Pad5)">
+      <node ref="P1" pin="5"/>
+    </net>
+    <net code="7" name="Net-(P1-Pad4)">
+      <node ref="P1" pin="4"/>
+    </net>
+    <net code="8" name="Net-(P1-Pad3)">
+      <node ref="P1" pin="3"/>
+    </net>
+    <net code="9" name="Net-(P1-Pad2)">
+      <node ref="P1" pin="2"/>
+    </net>
+    <net code="10" name="Net-(P1-Pad1)">
+      <node ref="P1" pin="1"/>
+    </net>
+    <net code="11" name="Net-(R4-Pad2)">
+      <node ref="R4" pin="2"/>
+      <node ref="SW2" pin="1"/>
+      <node ref="U2" pin="5"/>
+    </net>
+    <net code="12" name="VDD">
+      <node ref="R3" pin="1"/>
+      <node ref="R2" pin="1"/>
+      <node ref="R4" pin="1"/>
+      <node ref="U2" pin="7"/>
+      <node ref="U2" pin="3"/>
+      <node ref="C2" pin="2"/>
+      <node ref="Q1" pin="2"/>
+      <node ref="U1" pin="3"/>
+      <node ref="R1" pin="1"/>
+    </net>
+    <net code="13" name="/GPIO2">
+      <node ref="R1" pin="2"/>
+      <node ref="U2" pin="4"/>
+      <node ref="K1" pin="5"/>
+      <node ref="R3" pin="2"/>
+      <node ref="U1" pin="2"/>
+    </net>
+    <net code="14" name="/GPIO0">
+      <node ref="SW1" pin="2"/>
+      <node ref="K1" pin="4"/>
+      <node ref="U2" pin="6"/>
+      <node ref="R2" pin="2"/>
+    </net>
+  </nets>
+</export>

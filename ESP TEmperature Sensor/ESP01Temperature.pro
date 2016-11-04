@@ -1,4 +1,4 @@
-update=Monday, 17 October 2016 'pmt' 22:11:32
+update=Wednesday, 19 October 2016 'pmt' 23:15:44
 version=1
 last_client=kicad
 [pcbnew]
@@ -59,3 +59,4 @@ LibName27=atmel
 LibName28=contrib
 LibName29=valves
 LibName30=/Users/timini/Documents/Kicad/TJS
+LibName31=/Users/timini/Documents/Kicad/ESP8266 Lib/kicad-ESP8266/ESP8266
