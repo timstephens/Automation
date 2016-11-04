@@ -1,0 +1,24 @@
+Source,/Users/timini/Documents/Arduino/Automation/ESP TEmperature Sensor/ESP01Temperature.sch
+Kicad Rev,Eeschema 4.0.4-stable
+Generated Date,Sunday, 23 October 2016 'pmt' 22:11:07
+
+Title,Not Set
+Company,Not Set
+Revision,Not Set
+Date Issue,Not Set
+
+Reference,Value,Library,Library Ref
+SW1,PROG,device,SW_PUSH
+R2,10K,device,R
+R3,10K,device,R
+U1,DS18B20,TJS,DS18B20
+R1,10K,device,R
+K1,CONN_5,conn,CONN_5
+SW2,RESET,device,SW_PUSH
+R4,10K,device,R
+P2,CONN_2,conn,CONN_2
+Q1,MCP1700T-3302E/TT,TJS,MCP1700T-3302E/TT
+C1,33u,device,C
+C2,33u,device,C
+U2,ESP-01v090,ESP8266,ESP-01v090
+P1,CONN_6,conn,CONN_6
