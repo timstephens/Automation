@@ -49,7 +49,7 @@ void handleRoot() {
   String s;
   s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Hello from ESP8266 at ";
   s += WiFi.softAPIP();
-  s += "<form method='get' action='a'><label>SSID: </label><input name='ssid' length=32><input name='pass' length=64><br/><input name='host1' length=4><input name='host2' length=4><input name='host3' length=4><input name='host4' length=4><input type='submit'></form>";  //This is a cheaty way to get the IP address, but I couldn't be bothered to get DNS lookups to work on the local network, so we'll have to assume that the MQTT broker remains on a static IP (which is valid whilst I control everything).
+  s += "<form method='get' action='a'><label>SSID: </label><input name='ssid' length=32><label>Pass: </label><input name='pass' length=64><br/><label>Broker IP: </label><input name='host1' length=4>.<input name='host2' length=4>.<input name='host3' length=4>.<input name='host4' length=4><input type='submit'></form>";  //This is a cheaty way to get the IP address, but I couldn't be bothered to get DNS lookups to work on the local network, so we'll have to assume that the MQTT broker remains on a static IP (which is valid whilst I control everything).
   s += "</html>\r\n\r\n";
   Serial.println("Sending 200");
   configServer.send(200, "text/html", s);
@@ -96,6 +96,14 @@ void handleSetup() {
   EEPROM.write(IPAddr+12, host4.toInt());
   Serial.println();
   EEPROM.commit();
+
+  String s;
+  s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Configuration Complete. ";
+  s+= "<p>Reboot the sensor (cycle power) to connect to the wifi network</p>";
+   s += "</html>\r\n\r\n";
+  Serial.println("Sending 200");
+  configServer.send(200, "text/html", s);
+  
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -238,8 +246,11 @@ void loop() {
       publishTopic += clientName; 
       client.publish(publishTopic.c_str(), (char *)tempC.c_str());
       delay(2000);
-      Serial.println("Done, Sleeping 300s");
-      ESP.deepSleep(300000000, WAKE_RF_DEFAULT);
+
+      //TODO: Fix this deepsleep bug (I think it's related to the SDK, or the firmware which seems to output a pulse train on the RST port that causes the ESP to get into a pickle. More debug required...
+      //Serial.println("Done, Sleeping 10s");
+
+      //ESP.deepSleep(10000000, WAKE_RF_DEFAULT);
     }
     client.loop();
     
