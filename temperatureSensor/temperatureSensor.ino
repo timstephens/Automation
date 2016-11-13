@@ -49,7 +49,7 @@ void handleRoot() {
   String s;
   s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Hello from ESP8266 at ";
   s += WiFi.softAPIP();
-  s += "<form method='get' action='a'><label>SSID: </label><input name='ssid' length=32><label>Pass: </label><input name='pass' length=64><br/><label>Broker IP: </label><input name='host1' length=4>.<input name='host2' length=4>.<input name='host3' length=4>.<input name='host4' length=4><input type='submit'></form>";  //This is a cheaty way to get the IP address, but I couldn't be bothered to get DNS lookups to work on the local network, so we'll have to assume that the MQTT broker remains on a static IP (which is valid whilst I control everything).
+  s += "<form method='get' action='a'><label>SSID: </label><input name='ssid' length=32><label>Pass: </label><input name='pass' length=64><br/><label>IP: </label><input name='h1' length=4><input name='h2' length=4><input name='h3' length=4><input name='h4' length=4><input type='submit'></form>";  //This is a cheaty way to get the IP address, but I couldn't be bothered to get DNS lookups to work on the local network, so we'll have to assume that the MQTT broker remains on a static IP (which is valid whilst I control everything).
   s += "</html>\r\n\r\n";
   Serial.println("Sending 200");
   configServer.send(200, "text/html", s);
@@ -60,10 +60,10 @@ void handleSetup() {
   String ssid, pass, host1, host2, host3, host4;
   ssid = configServer.arg("ssid");
   pass = configServer.arg("pass");
-  host1 = configServer.arg("host1");
-  host2 = configServer.arg("host2");
-  host3 = configServer.arg("host3");
-  host4 = configServer.arg("host4");
+  host1 = configServer.arg("h1");
+  host2 = configServer.arg("h2");
+  host3 = configServer.arg("h3");
+  host4 = configServer.arg("h4");
 
   Serial.print("SSID is ");
   Serial.println(ssid);
@@ -91,19 +91,19 @@ void handleSetup() {
     Serial.print(pass.c_str()[i]);
   }
   EEPROM.write(IPAddr, host1.toInt());
-  EEPROM.write(IPAddr+4, host2.toInt());
-  EEPROM.write(IPAddr+8, host3.toInt());
-  EEPROM.write(IPAddr+12, host4.toInt());
+  EEPROM.write(IPAddr + 4, host2.toInt());
+  EEPROM.write(IPAddr + 8, host3.toInt());
+  EEPROM.write(IPAddr + 12, host4.toInt());
   Serial.println();
   EEPROM.commit();
 
-  String s;
-  s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Configuration Complete. ";
-  s+= "<p>Reboot the sensor (cycle power) to connect to the wifi network</p>";
-   s += "</html>\r\n\r\n";
-  Serial.println("Sending 200");
-  configServer.send(200, "text/html", s);
-  
+  //  String s;
+  //  s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Configuration Complete. ";
+  //  s+= "<p>Reboot the sensor (cycle power) to connect to the wifi network</p>";
+  //   s += "</html>\r\n\r\n";
+  //  Serial.println("Sending 200");
+  //  configServer.send(200, "text/html", s);
+  //
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -138,11 +138,31 @@ void reconnect() {
       // Wait 5 seconds before retrying
       delay(5000);
     }
+
+    //The code gets trapped in this loop if the network settings are not correct, or if the broker IP is wrong. Provide an opportunity to escape to the settings server
+    if (digitalRead(0) == 0) {
+      startSoftAP();
+    }
+    if (serverStatus == 1) {
+      configServer.handleClient();
+    }
   }
 }
 
 //***************************
 
+void startSoftAP() {
+
+  Serial.print("Setting soft-AP ... ");
+  Serial.println(WiFi.softAP(clientName.c_str()) ? "Ready" : "Failed!");  //clientName is generated in Setup and should be unique to the device since it's based on the MAC.
+  Serial.println(WiFi.softAPIP());
+
+  configServer.on("/", handleRoot);
+  configServer.on("/a", handleSetup);
+  configServer.begin();
+  Serial.println("HTTP server started");
+  serverStatus = 1; //Use this to decide whether to handle clients elsewhere in the sketch.
+}
 
 
 void setup() {
@@ -177,7 +197,7 @@ void setup() {
   Serial.print("PASS: ");
   Serial.println(epass);
 
-  host1 = EEPROM.read(IPAddr);  //Get the IP Address. 
+  host1 = EEPROM.read(IPAddr);  //Get the IP Address.
   host2 = EEPROM.read(IPAddr + 4);
   host3 = EEPROM.read(IPAddr + 8);
   host4 = EEPROM.read(IPAddr + 12);
@@ -200,16 +220,8 @@ void setup() {
     Serial.println("Change to configuration mode");
 
     // Start the server
+    startSoftAP();  //sets serverStatus = 1;
 
-    Serial.print("Setting soft-AP ... ");
-    Serial.println(WiFi.softAP(clientName.c_str()) ? "Ready" : "Failed!");  //clientName is generated in Setup and should be unique to the device since it's based on the MAC.
-    Serial.println(WiFi.softAPIP());
-
-    configServer.on("/", handleRoot);
-    configServer.on("/a", handleSetup);
-    configServer.begin();
-    Serial.println("HTTP server started");
-    serverStatus = 1; //Use this to decide whether to handle clients elsewhere in the sketch.
 
 
   } else {
@@ -243,19 +255,23 @@ void loop() {
     } else {
       Serial.println("Publishing");
       String publishTopic = "/temperature/";
-      publishTopic += clientName; 
+      publishTopic += clientName;
       client.publish(publishTopic.c_str(), (char *)tempC.c_str());
       delay(2000);
 
-      //TODO: Fix this deepsleep bug (I think it's related to the SDK, or the firmware which seems to output a pulse train on the RST port that causes the ESP to get into a pickle. More debug required...
+      //TODO: Fix this deepsleep bug
       //Serial.println("Done, Sleeping 10s");
 
       //ESP.deepSleep(10000000, WAKE_RF_DEFAULT);
     }
     client.loop();
-    
+
   } else {
     configServer.handleClient();
+  }
+  if (digitalRead(0) == 0) {
+    Serial.println("Prog pushed, running config server");
+    startSoftAP();
   }
   delay(2000);
 }

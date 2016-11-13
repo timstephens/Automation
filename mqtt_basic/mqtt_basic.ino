@@ -35,7 +35,7 @@ void reconnect() {
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (client.connect("arduinoClient", "user", "pass")) {
+    if (client.connect("arduinoClient12", "user", "pass")) {
       Serial.println("connected");
       // Once connected, publish an announcement...
       client.publish("outTopic", "hello world");
@@ -53,6 +53,7 @@ void reconnect() {
 
 
 void setup() {
+  WiFi.mode(WIFI_STA);
   // Setup console
   Serial.begin(115200);
   delay(10);
