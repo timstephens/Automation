@@ -809,8 +809,6 @@ Wire Wire Line
 	9100 850  9100 1050
 Connection ~ 8900 850 
 Connection ~ 8900 1350
-Wire Wire Line
-	8350 1350 9100 1350
 $Comp
 L +5VD #PWR028
 U 1 1 58B2024B
@@ -866,4 +864,17 @@ Text Label 6250 4250 0    60   ~ 0
 GPIO5
 Wire Wire Line
 	6600 5300 6600 5450
+$Comp
+L FUSE F1
+U 1 1 58B4A8B2
+P 8600 1350
+F 0 "F1" H 8700 1400 40  0000 C CNN
+F 1 "FUSE" H 8500 1300 40  0000 C CNN
+F 2 "TJS:Schurter_Fuseholder(20x5mm)0031.8211" H 8600 1350 60  0001 C CNN
+F 3 "" H 8600 1350 60  0000 C CNN
+	1    8600 1350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8850 1350 9100 1350
 $EndSCHEMATC
