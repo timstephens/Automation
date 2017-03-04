@@ -258,7 +258,9 @@ void setup() {
 
 void loop() {
   Serial.printf("Stations connected = %d\n", WiFi.softAPgetStationNum());
-
+  if (WiFi.status() != WL_CONNECTED) {
+    connectToWiFi();
+  }
   if (serverStatus == 0) {  //Only want to handle the webserver stuff if it's running.
     char buffer[10];
     sensors.requestTemperatures();
