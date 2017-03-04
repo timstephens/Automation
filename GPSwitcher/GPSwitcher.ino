@@ -180,7 +180,6 @@ void connectToWiFi() {
   //This function is called whenever the code detects that it's not connected to Wifi.
 
 
-  EEPROM.begin(512); //Begin the EEPROM session
 
   Serial.println("connectToWiFi() :");
   Serial.println("Reading EEPROM ssid");
@@ -210,10 +209,13 @@ void connectToWiFi() {
     Serial.print("*");
     connectCount ++;
   }
-  //return esid;  //The wifi network that we;ve connected to. 
+  //return esid;  //The wifi network that we;ve connected to.
 
 }
 void setup() {
+
+  EEPROM.begin(512); //Begin the EEPROM session
+
   int host1, host2, host3, host4; //the IP addresses of the mqtt broker.
   serverStatus = 0; //This is the default case, where there is no server started for config.
   Serial.begin(115200);
@@ -225,7 +227,7 @@ void setup() {
   clientName += "Switcher-";
   clientName += macToStr(mac);
 
- connectToWiFi();
+  connectToWiFi();
 
   if (WiFi.status() != WL_CONNECTED) {
     //Need to serve up a page that offers the opportunity to enter server details etc.
@@ -243,7 +245,7 @@ void setup() {
     client.setServer(server, 1883);
     client.setCallback(callback);
   }
-  //Setup the MQtt broker. 
+  //Setup the MQtt broker.
   host1 = EEPROM.read(IPAddr);  //Get the IP Address.
   host2 = EEPROM.read(IPAddr + 4);
   host3 = EEPROM.read(IPAddr + 8);
