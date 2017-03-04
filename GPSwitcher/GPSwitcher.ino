@@ -222,7 +222,7 @@ void setup() {
   //Generate the MQTT clientname from the MAC Address.
   uint8_t mac[6];
   WiFi.macAddress(mac);
-  clientName += "TempSensor-";
+  clientName += "Switcher-";
   clientName += macToStr(mac);
 
  connectToWiFi();
@@ -260,7 +260,7 @@ void setup() {
 
   //Stop the softAP if it's running, and disconnect all stations.
 
- // WiFi.softAPdisconnect(true);
+  //WiFi.softAPdisconnect(true);
 
 }
 
