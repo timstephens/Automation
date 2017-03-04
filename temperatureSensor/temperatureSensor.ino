@@ -165,21 +165,10 @@ void startSoftAP() {
 }
 
 
-void setup() {
-  int host1, host2, host3, host4; //the IP addresses of the mqtt broker.
-  serverStatus = 0; //This is the default case, where there is no server started for config.
-  Serial.begin(115200);
-  Serial.println("connected");
-
-  //Generate the MQTT clientname from the MAC Address.
-  uint8_t mac[6];
-  WiFi.macAddress(mac);
-  clientName += "TempSensor-";
-  clientName += macToStr(mac);
-
-  EEPROM.begin(512); //Begin the EEPROM session
-
-  Serial.println("Values stored in EEPROM are:");
+void connectToWiFi() {
+  //Load WiFi data from the EEPROM, and useit to connect to the WiFi network.
+  //This function is called whenever the code detects that it's not connected to Wifi.
+  Serial.println("connectToWiFi() :");
   Serial.println("Reading EEPROM ssid");
   String esid;
   for (int i = ssidAddr; i < 32; ++i)
@@ -197,14 +186,8 @@ void setup() {
   Serial.print("PASS: ");
   Serial.println(epass);
 
-  host1 = EEPROM.read(IPAddr);  //Get the IP Address.
-  host2 = EEPROM.read(IPAddr + 4);
-  host3 = EEPROM.read(IPAddr + 8);
-  host4 = EEPROM.read(IPAddr + 12);
 
-  server = IPAddress(host1, host2, host3, host4);
-  Serial.print("Broker IP=");
-  Serial.println(server);
+
   WiFi.hostname(clientName.c_str());  //Set the hostname of the wifi device so it appears names after the MAC on the setup page of routers etc.
   WiFi.begin(esid.c_str(), epass.c_str());
   int connectCount = 0;
@@ -213,6 +196,29 @@ void setup() {
     Serial.print("*");
     connectCount ++;
   }
+
+  //return esid;  //The wifi network that we;ve connected to.
+
+}
+
+
+void setup() {
+  EEPROM.begin(512); //Begin the EEPROM session
+
+  int host1, host2, host3, host4; //the IP addresses of the mqtt broker.
+  serverStatus = 0; //This is the default case, where there is no server started for config.
+  Serial.begin(115200);
+  Serial.println("connected");
+
+  //Generate the MQTT clientname from the MAC Address.
+  uint8_t mac[6];
+  WiFi.macAddress(mac);
+  clientName += "TempSensor-";
+  clientName += macToStr(mac);
+
+  connectToWiFi();
+
+
 
   if (WiFi.status() != WL_CONNECTED) {
     //Need to serve up a page that offers the opportunity to enter server details etc.
@@ -232,6 +238,18 @@ void setup() {
   }
   //
 
+
+//Setup the MQtt broker.
+  host1 = EEPROM.read(IPAddr);  //Get the IP Address.
+  host2 = EEPROM.read(IPAddr + 4);
+  host3 = EEPROM.read(IPAddr + 8);
+  host4 = EEPROM.read(IPAddr + 12);
+
+  server = IPAddress(host1, host2, host3, host4);
+  Serial.print("Broker IP=");
+  Serial.println(server);
+
+  
   //  //Start the temperature sensor
 
   sensors.begin();
