@@ -22,9 +22,6 @@ DallasTemperature sensors(&oneWire);
 // Update these with values suitable for your network.
 IPAddress server(192, 168, 0, 8);  //Default, but is set on 'connect' from values stored in the EEPROM
 
-int numberDSTemperatureSensors; //Global to hold the number of DS sensors on the bus
-
-
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
@@ -117,7 +114,7 @@ void setup() {
 
 
   } else {
-    Serial.print("Connected to WiFi network ");
+    Serial.println("Connected to WiFi network ");
     //Serial.println(esid);
     client.setServer(server, 1883);
     client.setCallback(callback);
@@ -135,6 +132,9 @@ void setup() {
   //  //Start the temperature sensor
 
   sensors.begin();
+
+  Serial.print("Number DS18b20 devices: ");
+  Serial.println(sensors.getDeviceCount(), DEC);
   //setup some IO on various pins
   pinMode(12, OUTPUT);
 
@@ -151,28 +151,30 @@ void loop() {
     sensors.requestTemperatures();
     // After we get the temperatures, we can print them here.
     // We use the function ByIndex, and as an example get the temperature from the first sensor only.
-    //for (int i = 0; i < numberDSTemperatureSensors; i++) {
-    Serial.print("Temperature for the device 1 (index 0) is: ");
-    Serial.println(sensors.getTempCByIndex(0));
-    String tempC = String(sensors.getTempCByIndex(0));
+    for (int i = 0; i < sensors.getDeviceCount(); i++) {
+      Serial.print("Temperature for the device ");
+      Serial.print(i, DEC);
+      Serial.println(" is: ");
+      Serial.println(sensors.getTempCByIndex(i));
+      String tempC = String(sensors.getTempCByIndex(i));
 
-    if (!client.connected()) {
-      reconnect();
-    } else {
-      Serial.println("Publishing");
-      String publishTopic = "/temperature/";
-      publishTopic += clientName;
-//      publishTopic += "/";
-//      publishTopic += i; //Append the sensor number to the channel data
-      client.publish(publishTopic.c_str(), (char *)tempC.c_str());
-      delay(2000);
+      if (!client.connected()) {
+        reconnect();
+      } else {
+        Serial.println("Publishing");
+        String publishTopic = "/temperature/";
+        publishTopic += clientName;
+        publishTopic += "/";
+        publishTopic += i; //Append the sensor number to the channel data
+        client.publish(publishTopic.c_str(), (char *)tempC.c_str());
+        delay(2000);
 
-      //TODO: Fix this deepsleep bug
-      //Serial.println("Done, Sleeping 10s");
+        //TODO: Fix this deepsleep bug
+        //Serial.println("Done, Sleeping 10s");
 
-      //ESP.deepSleep(10000000, WAKE_RF_DEFAULT);
+        //ESP.deepSleep(10000000, WAKE_RF_DEFAULT);
+      }
     }
-    //}
     client.loop();
 
   } else {

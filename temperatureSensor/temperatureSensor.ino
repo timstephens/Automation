@@ -8,13 +8,7 @@
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
 
-
-//configure a webserver object for the configuration page (if required)
-ESP8266WebServer configServer(80);
-#define ssidAddr 0 //Locations in EEPROM memory where the SSID and Password will be stored. 
-#define passAddr 64
-#define IPAddr 256
-int serverStatus;
+#include "wifiSetup.h"
 
 
 
@@ -25,86 +19,7 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
 // Update these with values suitable for your network.
-
 IPAddress server(192, 168, 0, 8);  //Default
-String clientName; //global to store the name of this device (based on the MAC)
-
-//8*************
-
-String macToStr(const uint8_t* mac)
-{
-  String result;
-  for (int i = 0; i < 6; ++i) {
-    result += String(mac[i], 16);
-    if (i < 5)
-      result += ':';
-  }
-  return result;
-}
-
-
-void handleRoot() {
-  //Build a form to get the SSID and password for the network that we really want to join.
-  // Read the first line of HTTP request
-  String s;
-  s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Hello from ESP8266 at ";
-  s += WiFi.softAPIP();
-  s += "<form method='get' action='a'><label>SSID: </label><input name='ssid' length=32><label>Pass: </label><input name='pass' length=64><br/><label>IP: </label><input name='h1' length=4><input name='h2' length=4><input name='h3' length=4><input name='h4' length=4><input type='submit'></form>";  //This is a cheaty way to get the IP address, but I couldn't be bothered to get DNS lookups to work on the local network, so we'll have to assume that the MQTT broker remains on a static IP (which is valid whilst I control everything).
-  s += "</html>\r\n\r\n";
-  Serial.println("Sending 200");
-  configServer.send(200, "text/html", s);
-}
-
-
-void handleSetup() {
-  String ssid, pass, host1, host2, host3, host4;
-  ssid = configServer.arg("ssid");
-  pass = configServer.arg("pass");
-  host1 = configServer.arg("h1");
-  host2 = configServer.arg("h2");
-  host3 = configServer.arg("h3");
-  host4 = configServer.arg("h4");
-
-  Serial.print("SSID is ");
-  Serial.println(ssid);
-  Serial.print("Password is ");
-  Serial.println(pass);
-  Serial.print("Conecting to ");
-  Serial.print(host1);
-  Serial.print(".");
-  Serial.print(host2);
-  Serial.print(".");
-  Serial.print(host3);
-  Serial.print(".");
-  Serial.println(host4);
-
-  // IPAddress host(host1.toInt(), host2().toInt, host3.toInt(), host4.toInt());
-  //Now need to set the SSID and password into the memory of the ESP, and make it reconnect to that.
-  //There also needs to be some though about how we make it try to connect to the wifi first.
-  for (int i = 0; i < ssid.length() + 1; ++i) {
-    EEPROM.write(ssidAddr + i, ssid.c_str()[i]);
-    Serial.print(ssid.c_str()[i]);
-  }
-  Serial.println();
-  for (int i = 0; i < pass.length() + 1; ++i) {
-    EEPROM.write(passAddr + i, pass.c_str()[i]);
-    Serial.print(pass.c_str()[i]);
-  }
-  EEPROM.write(IPAddr, host1.toInt());
-  EEPROM.write(IPAddr + 4, host2.toInt());
-  EEPROM.write(IPAddr + 8, host3.toInt());
-  EEPROM.write(IPAddr + 12, host4.toInt());
-  Serial.println();
-  EEPROM.commit();
-
-  //  String s;
-  //  s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Configuration Complete. ";
-  //  s+= "<p>Reboot the sensor (cycle power) to connect to the wifi network</p>";
-  //   s += "</html>\r\n\r\n";
-  //  Serial.println("Sending 200");
-  //  configServer.send(200, "text/html", s);
-  //
-}
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -130,7 +45,7 @@ void reconnect() {
       // Once connected, publish an announcement...
       client.publish("/control", clientName.c_str());
       // ... and resubscribe
-      client.subscribe("/control");
+      client.subscribe("/control/#");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -151,58 +66,10 @@ void reconnect() {
 
 //***************************
 
-void startSoftAP() {
-
-  Serial.print("Setting soft-AP ... ");
-  Serial.println(WiFi.softAP(clientName.c_str()) ? "Ready" : "Failed!");  //clientName is generated in Setup and should be unique to the device since it's based on the MAC.
-  Serial.println(WiFi.softAPIP());
-
-  configServer.on("/", handleRoot);
-  configServer.on("/a", handleSetup);
-  configServer.begin();
-  Serial.println("HTTP server started");
-  serverStatus = 1; //Use this to decide whether to handle clients elsewhere in the sketch.
-}
-
-
-void connectToWiFi() {
-  //Load WiFi data from the EEPROM, and useit to connect to the WiFi network.
-  //This function is called whenever the code detects that it's not connected to Wifi.
-  Serial.println("connectToWiFi() :");
-  Serial.println("Reading EEPROM ssid");
-  String esid;
-  for (int i = ssidAddr; i < 32; ++i)
-  {
-    esid += char(EEPROM.read(i));
-  }
-  Serial.print("SSID: ");
-  Serial.println(esid);
-  Serial.println("Reading EEPROM pass");
-  String epass = "";
-  for (int i = passAddr; i < 96; ++i)
-  {
-    epass += char(EEPROM.read(i));
-  }
-  Serial.print("PASS: ");
-  Serial.println(epass);
-
-
-
-  WiFi.hostname(clientName.c_str());  //Set the hostname of the wifi device so it appears names after the MAC on the setup page of routers etc.
-  WiFi.begin(esid.c_str(), epass.c_str());
-  int connectCount = 0;
-  while ((WiFi.status() != WL_CONNECTED) && connectCount < 20) { //Should try to connect for ~30s
-    delay(2000);
-    Serial.print("*");
-    connectCount ++;
-  }
-
-  //return esid;  //The wifi network that we;ve connected to.
-
-}
 
 
 void setup() {
+
   EEPROM.begin(512); //Begin the EEPROM session
 
   int host1, host2, host3, host4; //the IP addresses of the mqtt broker.
@@ -232,14 +99,13 @@ void setup() {
 
   } else {
     Serial.print("Connected to WiFi network ");
-    Serial.println(esid);
     client.setServer(server, 1883);
     client.setCallback(callback);
   }
   //
 
 
-//Setup the MQtt broker.
+  //Setup the MQtt broker.
   host1 = EEPROM.read(IPAddr);  //Get the IP Address.
   host2 = EEPROM.read(IPAddr + 4);
   host3 = EEPROM.read(IPAddr + 8);
@@ -249,7 +115,7 @@ void setup() {
   Serial.print("Broker IP=");
   Serial.println(server);
 
-  
+
   //  //Start the temperature sensor
 
   sensors.begin();
@@ -257,7 +123,6 @@ void setup() {
 
 
 void loop() {
-  Serial.printf("Stations connected = %d\n", WiFi.softAPgetStationNum());
   if (WiFi.status() != WL_CONNECTED) {
     connectToWiFi();
   }
@@ -276,6 +141,7 @@ void loop() {
       Serial.println("Publishing");
       String publishTopic = "/temperature/";
       publishTopic += clientName;
+      publishTopic +="/0";
       client.publish(publishTopic.c_str(), (char *)tempC.c_str());
       delay(2000);
 
@@ -287,6 +153,7 @@ void loop() {
     client.loop();
 
   } else {
+    Serial.printf("Stations connected = %d\n", WiFi.softAPgetStationNum());
     configServer.handleClient();
   }
   if (digitalRead(0) == 0) {
