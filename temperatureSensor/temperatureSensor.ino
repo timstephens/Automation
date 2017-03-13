@@ -131,24 +131,27 @@ void loop() {
     sensors.requestTemperatures();
     // After we get the temperatures, we can print them here.
     // We use the function ByIndex, and as an example get the temperature from the first sensor only.
-    Serial.print("Temperature for the device 1 (index 0) is: ");
-    Serial.println(sensors.getTempCByIndex(0));
-    String tempC = String(sensors.getTempCByIndex(0));
+    for (int i = 0; i < sensors.getDeviceCount(); i++) {
+      Serial.print("Temperature for the device 1 (index 0) is: ");
+      Serial.println(sensors.getTempCByIndex(i));
+      String tempC = String(sensors.getTempCByIndex(i));
 
-    if (!client.connected()) {
-      reconnect();
-    } else {
-      Serial.println("Publishing");
-      String publishTopic = "/temperature/";
-      publishTopic += clientName;
-      publishTopic +="/0";
-      client.publish(publishTopic.c_str(), (char *)tempC.c_str());
-      delay(2000);
+      if (!client.connected()) {
+        reconnect();
+      } else {
+        Serial.println("Publishing");
+        String publishTopic = "/temperature/";
+        publishTopic += clientName;
+        publishTopic += "/";
+        publishTopic += i; //Append the sensor number to the channel data
+        client.publish(publishTopic.c_str(), (char *)tempC.c_str());
+        delay(2000);
 
-      //TODO: Fix this deepsleep bug
-      //Serial.println("Done, Sleeping 10s");
+        //TODO: Fix this deepsleep bug
+        //Serial.println("Done, Sleeping 10s");
 
-      //ESP.deepSleep(10000000, WAKE_RF_DEFAULT);
+        //ESP.deepSleep(10000000, WAKE_RF_DEFAULT);
+      }
     }
     client.loop();
 
