@@ -1,4 +1,4 @@
-update=Sunday, 26 February 2017 'pmt' 22:58:43
+update=Friday, 17 March 2017 'pmt' 20:25:09
 version=1
 last_client=kicad
 [pcbnew]
@@ -73,3 +73,13 @@ LibName43=/Users/timini/Documents/Kicad/SeeedOPL for Kicad-alpha-2017-01-02/Seee
 LibName44=/Users/timini/Documents/Kicad/SeeedOPL for Kicad-alpha-2017-01-02/SeeedOPL-Resistor-2016
 [general]
 version=1
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceForceRefPrefix=0
+SpiceUseNetNumbers=0
+LabSize=60

@@ -14,7 +14,9 @@
 
 
 // Data wire is plugged into port 2 on the Arduino
-#define ONE_WIRE_BUS 2
+#define ONE_WIRE_BUS 5
+#define SWITCHER_PIN 12
+#define LED_PIN 4 
 // Setup a oneWire instance to communicate with any OneWire devices (not just Maxim/Dallas temperature ICs)
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
@@ -35,9 +37,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if (strcmp(topic, "/control/heat") == 0) {
     if (payload[0] == '1') {
       Serial.println("Setting output high");
-      digitalWrite(12, HIGH);
+      digitalWrite(SWITCHER_PIN, HIGH);
+      digitalWrite(LED_PIN, HIGH);
+
     } else {
-      digitalWrite(12, LOW);
+      digitalWrite(SWITCHER_PIN, LOW);
+      digitalWrite(LED_PIN, LOW);
       Serial.println("Setting output low");
     }
   }
@@ -136,7 +141,8 @@ void setup() {
   Serial.print("Number DS18b20 devices: ");
   Serial.println(sensors.getDeviceCount(), DEC);
   //setup some IO on various pins
-  pinMode(12, OUTPUT);
+  pinMode(SWITCHER_PIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
 
 }
 
