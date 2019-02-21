@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:ESP01Temperature-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -105,20 +106,10 @@ $EndComp
 Wire Wire Line
 	4350 3700 4350 3550
 Wire Wire Line
-	5200 3200 5200 3550
-Wire Wire Line
-	5200 3550 5200 4250
+	5200 3200 5200 4250
 Connection ~ 5200 3550
 Wire Wire Line
-	5200 2700 5600 2700
-Wire Wire Line
-	5600 2700 7200 2700
-Wire Wire Line
-	7200 2700 7300 2700
-Wire Wire Line
-	7300 2700 7950 2700
-Wire Wire Line
-	7950 2700 8400 2700
+	5200 2700 8400 2700
 Connection ~ 5600 2700
 $Comp
 L GND #PWR03
@@ -166,9 +157,7 @@ F 3 "" H 1900 4150 60  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	1900 3250 1900 3450
-Wire Wire Line
-	1900 3450 1900 3650
+	1900 3250 1900 3650
 $Comp
 L R R1
 U 1 1 580544F8
@@ -186,9 +175,7 @@ Connection ~ 1900 3450
 Wire Wire Line
 	2350 3950 2350 4150
 Wire Wire Line
-	2300 4150 2350 4150
-Wire Wire Line
-	2350 4150 3200 4150
+	2300 4150 3200 4150
 Wire Wire Line
 	1900 4550 1900 4800
 Connection ~ 2350 4150
@@ -308,7 +295,7 @@ F 3 "" H 4750 1500 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MCP1700T-3302E/TT Q1
+L MCP1700T-3302E/TT-RESCUE-ESP01Temperature Q1
 U 1 1 5807E986
 P 3550 1300
 F 0 "Q1" H 3700 900 60  0000 C CNN
@@ -319,9 +306,7 @@ F 3 "" H 3550 1300 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	2100 1300 2600 1300
-Wire Wire Line
-	2600 1300 2950 1300
+	2100 1300 2950 1300
 Wire Wire Line
 	3550 800  3550 750 
 Wire Wire Line
@@ -391,15 +376,11 @@ F 3 "" H 6650 4300 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	7600 4250 8450 4250
-Wire Wire Line
-	8450 4250 8500 4250
+	7600 4250 8500 4250
 Wire Wire Line
 	7600 4150 7950 4150
 Wire Wire Line
-	7950 2700 7950 4150
-Wire Wire Line
-	7950 4150 7950 4350
+	7950 2700 7950 4350
 Wire Wire Line
 	7950 4350 7600 4350
 Connection ~ 7950 4150
@@ -408,9 +389,7 @@ TX
 Text Label 5700 4150 2    60   ~ 0
 RX
 Wire Wire Line
-	3200 4350 5600 4350
-Wire Wire Line
-	5600 4350 5700 4350
+	3200 4350 5700 4350
 Wire Wire Line
 	5200 4250 5700 4250
 Wire Wire Line

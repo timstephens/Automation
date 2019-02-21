@@ -732,7 +732,7 @@ GPIO14
 Text Label 3100 2600 0    60   ~ 0
 GPIO13
 Text Label 3100 3000 0    60   ~ 0
-GPIO5
+GPIO4
 Text Label 3100 3800 0    60   ~ 0
 ADC
 $Comp
@@ -753,13 +753,11 @@ Wire Wire Line
 Text Label 7000 1300 0    60   ~ 0
 ADC
 Text Label 7000 1200 0    60   ~ 0
-GPIO5
+GPIO4
 Text Label 7000 1100 0    60   ~ 0
 GPIO13
 Text Label 7000 1000 0    60   ~ 0
 GPIO14
-Text Label 7000 900  0    60   ~ 0
-GPIO15
 Wire Wire Line
 	7150 800  7000 800 
 $Comp
@@ -774,7 +772,7 @@ F 3 "" H 7150 700 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7150 700  7150 800 
+	7150 700  7150 900 
 Wire Wire Line
 	8450 5100 8450 5050
 Text GLabel 9000 4550 0    60   Input ~ 0
@@ -861,7 +859,7 @@ $EndComp
 Wire Wire Line
 	6600 4250 6250 4250
 Text Label 6250 4250 0    60   ~ 0
-GPIO5
+GPIO4
 Wire Wire Line
 	6600 5300 6600 5450
 $Comp
@@ -877,4 +875,24 @@ F 3 "" H 8600 1350 60  0000 C CNN
 $EndComp
 Wire Wire Line
 	8850 1350 9100 1350
+$Comp
+L GND #PWR?
+U 1 1 59711544
+P 3600 2250
+F 0 "#PWR?" H 3600 2250 30  0001 C CNN
+F 1 "GND" H 3600 2180 30  0001 C CNN
+F 2 "" H 3600 2250 60  0001 C CNN
+F 3 "" H 3600 2250 60  0001 C CNN
+	1    3600 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3600 2250 3600 2200
+Wire Wire Line
+	3600 2200 3100 2200
+Text Notes 1750 4450 0    60   ~ 0
+Note:\nGPIO4 and GPIO5 are swapped\n on the original part net for the \nESP8266. 
+Wire Wire Line
+	7150 900  7000 900 
+Connection ~ 7150 800 
 $EndSCHEMATC

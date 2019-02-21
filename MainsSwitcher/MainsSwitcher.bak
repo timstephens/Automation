@@ -732,7 +732,7 @@ GPIO14
 Text Label 3100 2600 0    60   ~ 0
 GPIO13
 Text Label 3100 3000 0    60   ~ 0
-GPIO5
+GPIO4
 Text Label 3100 3800 0    60   ~ 0
 ADC
 $Comp
@@ -753,7 +753,7 @@ Wire Wire Line
 Text Label 7000 1300 0    60   ~ 0
 ADC
 Text Label 7000 1200 0    60   ~ 0
-GPIO5
+GPIO4
 Text Label 7000 1100 0    60   ~ 0
 GPIO13
 Text Label 7000 1000 0    60   ~ 0
@@ -861,20 +861,37 @@ $EndComp
 Wire Wire Line
 	6600 4250 6250 4250
 Text Label 6250 4250 0    60   ~ 0
-GPIO5
+GPIO4
 Wire Wire Line
 	6600 5300 6600 5450
 $Comp
-L FUSE F?
+L FUSE F1
 U 1 1 58B4A8B2
 P 8600 1350
-F 0 "F?" H 8700 1400 40  0000 C CNN
+F 0 "F1" H 8700 1400 40  0000 C CNN
 F 1 "FUSE" H 8500 1300 40  0000 C CNN
-F 2 "" H 8600 1350 60  0000 C CNN
+F 2 "TJS:Schurter_Fuseholder(20x5mm)0031.8211" H 8600 1350 60  0001 C CNN
 F 3 "" H 8600 1350 60  0000 C CNN
 	1    8600 1350
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
 	8850 1350 9100 1350
+$Comp
+L GND #PWR?
+U 1 1 59711544
+P 3600 2250
+F 0 "#PWR?" H 3600 2250 30  0001 C CNN
+F 1 "GND" H 3600 2180 30  0001 C CNN
+F 2 "" H 3600 2250 60  0001 C CNN
+F 3 "" H 3600 2250 60  0001 C CNN
+	1    3600 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3600 2250 3600 2200
+Wire Wire Line
+	3600 2200 3100 2200
+Text Notes 1750 4450 0    60   ~ 0
+Note:\nGPIO4 and GPIO5 are swapped\n on the original part net for the \nESP8266. 
 $EndSCHEMATC
